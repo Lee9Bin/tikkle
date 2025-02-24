@@ -1,29 +1,14 @@
 package com.taesan.tikkle.domain.member.dto.response;
 
-import java.util.UUID;
+public interface MemberRankResponse {
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+	String getMemberId();
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class MemberRankResponse {
-	private UUID memberId;
-	private long order;
-	private String nickname;
-	private long rankingPoint;
-	private long tradeCount;
+	String getNickname();
 
-	public MemberRankResponse(UUID memberId, String name, long rankingPoint, long tradeCount) {
-		this.memberId = memberId;
-		this.nickname = name;
-		this.rankingPoint = rankingPoint;
-		this.tradeCount = tradeCount;
-	}
+	long getRankingPoint();
 
-	public void grantOrder(long order) {
-		this.order = order;
-	}
+	long getTradeCount();
+
+	long getRanking();
 }
