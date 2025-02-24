@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.taesan.tikkle.domain.board.entity.Board;
@@ -48,8 +50,8 @@ public class MemberService {
 		return MemberResponse.from(member, profileImage);
 	}
 
-	public List<MemberRankResponse> findMemberRankings() {
-		return memberRepository.findMemberRankings();
+	public Page<MemberRankResponse> findMemberRankings(Pageable pageable) {
+		return memberRepository.findMemberRankings(pageable);
 	}
 
 	public AllMemberBoardResponse getMemberBoard(UUID username) {
