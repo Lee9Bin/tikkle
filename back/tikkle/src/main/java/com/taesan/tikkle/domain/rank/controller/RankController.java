@@ -27,8 +27,7 @@ public class RankController {
 
 	@GetMapping
 	public ResponseEntity<ApiResponse<PagingResponse<MemberRankResponse>>> getMemberRanking(
-		@AuthedUsername UUID username,
-		@RequestParam(defaultValue = "0") Pageable pageable) {
+		@AuthedUsername UUID username, Pageable pageable) {
 
 		PagingResponse<MemberRankResponse> responseData = rankService.getRankList(username, pageable);
 
