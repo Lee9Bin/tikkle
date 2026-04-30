@@ -1,9 +1,9 @@
 package com.taesan.tikkle.domain.rank.service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,11 +28,11 @@ public class RankService {
 		Optional<RankSnapshot> optionalRankSnapshot = findLatestCompletedRankSnapshot();
 
 		if (optionalRankSnapshot.isEmpty()) {
-			return RankResponse.of(List.of(), null);
+			return RankResponse.of(Page.empty(pageable), null);
 		}
 
 		RankSnapshot rankSnapshot = optionalRankSnapshot.get();
-		List<RankEntryResponse> rankList = findRankList(rankSnapshot, keyword, pageable);
+		Page<RankEntryResponse> rankList = findRankList(rankSnapshot, keyword, pageable);
 
 		RankEntryResponse myRank = rankSnapshotEntryRepository.findByRankSnapshotAndMemberId(rankSnapshot, username)
 			.map(RankEntryResponse::from)
@@ -45,18 +45,14 @@ public class RankService {
 		return rankSnapshotRepository.findTopByStatusOrderByCreatedAtDesc(RankSnapshotStatus.COMPLETED);
 	}
 
-	private List<RankEntryResponse> findRankList(RankSnapshot rankSnapshot, String keyword, Pageable pageable) {
+	private Page<RankEntryResponse> findRankList(RankSnapshot rankSnapshot, String keyword, Pageable pageable) {
 		if (keyword == null || keyword.isBlank()) {
 			return rankSnapshotEntryRepository.findByRankSnapshotOrderByPositionAsc(rankSnapshot, pageable)
-				.stream()
-				.map(RankEntryResponse::from)
-				.toList();
+				.map(RankEntryResponse::from);
 		}
 
 		return rankSnapshotEntryRepository
 			.findByRankSnapshotAndMemberNameContainingOrderByPositionAsc(rankSnapshot, keyword, pageable)
-			.stream()
-			.map(RankEntryResponse::from)
-			.toList();
+			.map(RankEntryResponse::from);
 	}
 }
