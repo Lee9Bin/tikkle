@@ -1,6 +1,7 @@
 package com.taesan.tikkle.domain.rank.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Pageable;
@@ -13,9 +14,6 @@ import com.taesan.tikkle.domain.rank.entity.RankSnapshot;
 import com.taesan.tikkle.domain.rank.entity.RankSnapshotStatus;
 import com.taesan.tikkle.domain.rank.repository.RankSnapshotEntryRepository;
 import com.taesan.tikkle.domain.rank.repository.RankSnapshotRepository;
-import com.taesan.tikkle.global.errors.ErrorCode;
-import com.taesan.tikkle.global.exceptions.CustomException;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,7 +25,13 @@ public class RankService {
 
 	@Transactional(readOnly = true)
 	public RankResponse getRanks(UUID username, String keyword, Pageable pageable) {
-		RankSnapshot rankSnapshot = findLatestCompletedRankSnapshot();
+		Optional<RankSnapshot> optionalRankSnapshot = findLatestCompletedRankSnapshot();
+
+		if (optionalRankSnapshot.isEmpty()) {
+			return RankResponse.of(List.of(), null);
+		}
+
+		RankSnapshot rankSnapshot = optionalRankSnapshot.get();
 		List<RankEntryResponse> rankList = findRankList(rankSnapshot, keyword, pageable);
 
 		RankEntryResponse myRank = rankSnapshotEntryRepository.findByRankSnapshotAndMemberId(rankSnapshot, username)
@@ -37,9 +41,8 @@ public class RankService {
 		return RankResponse.of(rankList, myRank);
 	}
 
-	private RankSnapshot findLatestCompletedRankSnapshot() {
-		return rankSnapshotRepository.findTopByStatusOrderByCreatedAtDesc(RankSnapshotStatus.COMPLETED)
-			.orElseThrow(() -> new CustomException(ErrorCode.RANK_SNAPSHOT_NOT_FOUND));
+	private Optional<RankSnapshot> findLatestCompletedRankSnapshot() {
+		return rankSnapshotRepository.findTopByStatusOrderByCreatedAtDesc(RankSnapshotStatus.COMPLETED);
 	}
 
 	private List<RankEntryResponse> findRankList(RankSnapshot rankSnapshot, String keyword, Pageable pageable) {
