@@ -1,18 +1,21 @@
 package com.taesan.tikkle.domain.rank.dto.response;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import lombok.Builder;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
-public class RankResponse extends RankBaseResponse {
+@Builder
+public class RankResponse {
 
+	private List<RankEntryResponse> rankList;
 	private RankEntryResponse myRank;
 	private int page;
 	private int size;
