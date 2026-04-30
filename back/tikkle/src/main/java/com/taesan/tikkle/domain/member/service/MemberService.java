@@ -11,7 +11,6 @@ import com.taesan.tikkle.domain.board.repository.BoardRepository;
 import com.taesan.tikkle.domain.file.service.FileService;
 import com.taesan.tikkle.domain.member.dto.response.AllMemberBoardResponse;
 import com.taesan.tikkle.domain.member.dto.response.MemberBoardResponse;
-import com.taesan.tikkle.domain.member.dto.response.MemberRankResponse;
 import com.taesan.tikkle.domain.member.dto.response.MemberResponse;
 import com.taesan.tikkle.domain.member.entity.Member;
 import com.taesan.tikkle.domain.member.repository.MemberRepository;
@@ -46,10 +45,6 @@ public class MemberService {
 		byte[] profileImage = fileService.getProfileImage(member.getId());
 
 		return MemberResponse.from(member, profileImage);
-	}
-
-	public List<MemberRankResponse> findMemberRankings() {
-		return memberRepository.findMemberRankings();
 	}
 
 	public AllMemberBoardResponse getMemberBoard(UUID username) {
