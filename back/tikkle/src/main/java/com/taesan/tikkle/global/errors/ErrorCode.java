@@ -28,6 +28,7 @@ public enum ErrorCode {
 	RATE_NOT_FOUND(HttpStatus.BAD_REQUEST, 2004, "정의되지 않은 환율입니다."),
 	RATE_NOT_EXIST(HttpStatus.BAD_REQUEST, 2005, "정의된 환율이 없습니다."),
 	RATE_INVALID(HttpStatus.BAD_REQUEST, 2006, "최신 환율이 아닙니다. 다시 시도 해주세요."),
+	RANK_SNAPSHOT_NOT_FOUND(HttpStatus.BAD_REQUEST, 2104, "랭킹 스냅샷이 존재하지 않습니다."),
 	ACCOUNT_NOT_FOUND(HttpStatus.BAD_REQUEST, 1104, "사용자의 계좌가 없습니다."),
 	ACCOUNT_INSUFFICIENT_BALANCE(HttpStatus.BAD_REQUEST, 1105, "사용자의 잔고가 부족합니다.");
 ;
@@ -36,4 +37,3 @@ public enum ErrorCode {
 	private final String message;
 
 }
-
