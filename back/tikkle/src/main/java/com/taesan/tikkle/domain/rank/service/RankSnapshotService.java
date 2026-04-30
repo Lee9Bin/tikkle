@@ -37,7 +37,8 @@ public class RankSnapshotService {
 	}
 
 	/**
-	 * rank는 포인트와 거래 횟수 기준으로 계산하고, position은 조회 순서대로 부여한다.
+	 * rank는 포인트와 거래 횟수 기준으로 계산하고
+	 * position은 정렬된 순서대로 1부터 부여한다.
 	 */
 	private List<RankSnapshotEntry> createRankSnapshotEntries(RankSnapshot rankSnapshot,
 		List<RankSnapshotSource> sortedRankSnapshotSources) {
