@@ -1,5 +1,6 @@
 package com.taesan.tikkle.domain.rank.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.taesan.tikkle.domain.rank.dto.response.RankResponse;
+import com.taesan.tikkle.domain.rank.dto.response.TopRankResponse;
 import com.taesan.tikkle.domain.rank.service.RankService;
 import com.taesan.tikkle.global.annotations.AuthedUsername;
 import com.taesan.tikkle.global.response.ApiResponse;
@@ -22,6 +24,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RankController {
 	private final RankService rankService;
+
+	@GetMapping("/top")
+	public ResponseEntity<ApiResponse<List<TopRankResponse>>> getTop10Ranks() {
+		ApiResponse<List<TopRankResponse>> response = ApiResponse.success("랭킹 조회에 성공했습니다.",
+			rankService.getTop10Ranks());
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
 
 	@GetMapping
 	public ResponseEntity<ApiResponse<RankResponse>> getRanks(
