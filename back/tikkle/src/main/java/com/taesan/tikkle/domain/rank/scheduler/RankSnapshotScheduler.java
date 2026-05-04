@@ -6,15 +6,21 @@ import org.springframework.stereotype.Component;
 import com.taesan.tikkle.domain.rank.service.RankSnapshotService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class RankSnapshotScheduler {
 
 	private final RankSnapshotService rankSnapshotService;
 
 	@Scheduled(cron = "0 0 * * * *")
 	public void generateRankSnapshot() {
-		rankSnapshotService.generateSnapshot();
+		try {
+			rankSnapshotService.generateSnapshot();
+		} catch (Exception exception) {
+			log.error("랭킹 스냅샷 생성에 실패했습니다.", exception);
+		}
 	}
 }
