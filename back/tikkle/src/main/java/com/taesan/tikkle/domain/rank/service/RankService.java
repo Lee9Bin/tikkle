@@ -42,6 +42,11 @@ public class RankService {
 			.orElseGet(() -> RankResponse.empty(pageable));
 	}
 
+	@Transactional(readOnly = true)
+	public void refreshTopRanksCache() {
+		rankCacheService.cacheTopRanks(findTopRanks());
+	}
+
 	private List<TopRankResponse> findTopRanksAndCache() {
 		List<TopRankResponse> topRanks = findTopRanks();
 		rankCacheService.cacheTopRanks(topRanks);
