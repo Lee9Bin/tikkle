@@ -26,9 +26,9 @@ public class RankController {
 	private final RankService rankService;
 
 	@GetMapping("/top")
-	public ResponseEntity<ApiResponse<List<TopRankResponse>>> getTop10Ranks() {
+	public ResponseEntity<ApiResponse<List<TopRankResponse>>> getTopRanks() {
 		ApiResponse<List<TopRankResponse>> response = ApiResponse.success("랭킹 조회에 성공했습니다.",
-			rankService.getTop10Ranks());
+			rankService.getTopRanks());
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 

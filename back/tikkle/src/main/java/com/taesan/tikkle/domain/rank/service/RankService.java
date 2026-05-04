@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,13 +23,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RankService {
 
+	private static final int TOP_RANK_LIMIT = 10;
+
 	private final RankSnapshotRepository rankSnapshotRepository;
 	private final RankSnapshotEntryRepository rankSnapshotEntryRepository;
 
 	@Transactional(readOnly = true)
-	public List<TopRankResponse> getTop10Ranks() {
+	public List<TopRankResponse> getTopRanks() {
 		return findLatestCompletedRankSnapshot()
-			.map(rankSnapshot -> rankSnapshotEntryRepository.findTop10ByRankSnapshotOrderByPositionAsc(rankSnapshot)
+			.map(rankSnapshot -> rankSnapshotEntryRepository
+				.findAllByRankSnapshotOrderByPositionAsc(rankSnapshot, PageRequest.of(0, TOP_RANK_LIMIT))
 				.stream()
 				.map(TopRankResponse::from)
 				.toList())

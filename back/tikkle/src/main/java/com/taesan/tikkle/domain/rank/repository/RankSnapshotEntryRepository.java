@@ -15,7 +15,7 @@ public interface RankSnapshotEntryRepository extends JpaRepository<RankSnapshotE
 
 	Page<RankSnapshotEntry> findByRankSnapshotOrderByPositionAsc(RankSnapshot rankSnapshot, Pageable pageable);
 
-	List<RankSnapshotEntry> findTop10ByRankSnapshotOrderByPositionAsc(RankSnapshot rankSnapshot);
+	List<RankSnapshotEntry> findAllByRankSnapshotOrderByPositionAsc(RankSnapshot rankSnapshot, Pageable pageable);
 
 	Optional<RankSnapshotEntry> findByRankSnapshotAndMemberId(RankSnapshot rankSnapshot, UUID memberId);
 
