@@ -17,6 +17,7 @@ import com.taesan.tikkle.domain.rank.entity.RankSnapshot;
 import com.taesan.tikkle.domain.rank.entity.RankSnapshotStatus;
 import com.taesan.tikkle.domain.rank.repository.RankSnapshotEntryRepository;
 import com.taesan.tikkle.domain.rank.repository.RankSnapshotRepository;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,11 +26,29 @@ public class RankService {
 
 	private static final int TOP_RANK_LIMIT = 10;
 
+	private final RankCacheService rankCacheService;
 	private final RankSnapshotRepository rankSnapshotRepository;
 	private final RankSnapshotEntryRepository rankSnapshotEntryRepository;
 
 	@Transactional(readOnly = true)
 	public List<TopRankResponse> getTopRanks() {
+		return rankCacheService.getTopRanks().orElseGet(this::findTopRanksAndCache);
+	}
+
+	@Transactional(readOnly = true)
+	public RankResponse getRanks(UUID memberId, String keyword, Pageable pageable) {
+		return findLatestCompletedRankSnapshot()
+			.map(rankSnapshot -> getRankResponse(rankSnapshot, memberId, keyword, pageable))
+			.orElseGet(() -> RankResponse.empty(pageable));
+	}
+
+	private List<TopRankResponse> findTopRanksAndCache() {
+		List<TopRankResponse> topRanks = findTopRanks();
+		rankCacheService.cacheTopRanks(topRanks);
+		return topRanks;
+	}
+
+	private List<TopRankResponse> findTopRanks() {
 		return findLatestCompletedRankSnapshot()
 			.map(rankSnapshot -> rankSnapshotEntryRepository
 				.findAllByRankSnapshotOrderByPositionAsc(rankSnapshot, PageRequest.of(0, TOP_RANK_LIMIT))
@@ -39,18 +58,10 @@ public class RankService {
 			.orElseGet(List::of);
 	}
 
-	@Transactional(readOnly = true)
-	public RankResponse getRanks(UUID username, String keyword, Pageable pageable) {
-		Optional<RankSnapshot> optionalRankSnapshot = findLatestCompletedRankSnapshot();
-
-		if (optionalRankSnapshot.isEmpty()) {
-			return RankResponse.of(Page.empty(pageable), null);
-		}
-
-		RankSnapshot rankSnapshot = optionalRankSnapshot.get();
+	private RankResponse getRankResponse(RankSnapshot rankSnapshot, UUID memberId, String keyword, Pageable pageable) {
 		Page<RankEntryResponse> rankList = findRankList(rankSnapshot, keyword, pageable);
 
-		RankEntryResponse myRank = rankSnapshotEntryRepository.findByRankSnapshotAndMemberId(rankSnapshot, username)
+		RankEntryResponse myRank = rankSnapshotEntryRepository.findByRankSnapshotAndMemberId(rankSnapshot, memberId)
 			.map(RankEntryResponse::from)
 			.orElse(null);
 

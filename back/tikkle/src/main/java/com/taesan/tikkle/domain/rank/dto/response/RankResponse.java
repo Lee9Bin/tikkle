@@ -3,11 +3,12 @@ package com.taesan.tikkle.domain.rank.dto.response;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Builder;
 
 @Getter
 @AllArgsConstructor
@@ -33,5 +34,9 @@ public class RankResponse {
 			.totalPages(rankList.getTotalPages())
 			.hasNext(rankList.hasNext())
 			.build();
+	}
+
+	public static RankResponse empty(Pageable pageable) {
+		return RankResponse.of(Page.empty(pageable), null);
 	}
 }

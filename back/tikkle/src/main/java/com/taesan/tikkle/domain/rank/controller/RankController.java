@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,17 +28,17 @@ public class RankController {
 	public ResponseEntity<ApiResponse<List<TopRankResponse>>> getTopRanks() {
 		ApiResponse<List<TopRankResponse>> response = ApiResponse.success("랭킹 조회에 성공했습니다.",
 			rankService.getTopRanks());
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping
 	public ResponseEntity<ApiResponse<RankResponse>> getRanks(
-		@AuthedUsername UUID username,
+		@AuthedUsername UUID memberId,
 		@RequestParam(required = false) String keyword,
 		Pageable pageable
 	) {
 		ApiResponse<RankResponse> response = ApiResponse.success("랭킹 조회에 성공했습니다.",
-			rankService.getRanks(username, keyword, pageable));
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+			rankService.getRanks(memberId, keyword, pageable));
+		return ResponseEntity.ok(response);
 	}
 }

@@ -4,11 +4,15 @@ import java.util.UUID;
 
 import com.taesan.tikkle.domain.rank.entity.RankSnapshotEntry;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TopRankResponse {
 
 	private UUID memberId;
